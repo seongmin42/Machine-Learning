@@ -30,10 +30,11 @@ class UniformDistribution(Initializer):
         return np.random.uniform(self.lower, self.upper, args)
 
 
+
 class NormalDistribution(Initializer):
     def __init__(self, mean=0, std=1):
         self.mean = mean
         self.std = std
 
-    def initialize(self, *args):
-        return np.random.normal(self.mean, self.std, *args)
+    def initialize(self, *shape):
+        return np.random.normal(self.mean, self.std, shape)
