@@ -1,3 +1,4 @@
+from loss import CrossEntropy
 from model import neural_network as nn
 from common.layer import Layer
 import numpy as np
@@ -36,17 +37,17 @@ def get_training_data(shuffle=False):
 if __name__ == "__main__":
     # X_train, y_train = get_training_data()
     X_train, y_train, X_test, y_test, labels = get_mnist_data()
-    print(X_train.shape, y_train.shape, X_test, y_test)
+    # print(X_train.shape, y_train.shape, X_test, y_test)
 
-    model = nn.Model()
+    model = nn.Model(loss_function=CrossEntropy())
 
     model.layer(Layer(X_train.shape[1]))
     model.layer(Layer(256, activation=Relu()))
     model.layer(Layer(128, activation=Relu()))
-    # model.layer(Layer(labels, activation=Sigmoid(a=1e-5)))
-    model.layer(Layer(labels, activation=Softmax()))
+    model.layer(Layer(labels, activation=Sigmoid(a=1e-5)))
+    # model.layer(Layer(labels, activation=Relu()))
     model.compile()
 
-    model.train(X_train, y_train, epochs=1000, learning_rate=0.05)
-    plt.plot(range(1000), model.losses)
+    model.train(X_train, y_train, epochs=20, learning_rate=0.001)
+    plt.plot(range(20), model.losses)
     plt.show()

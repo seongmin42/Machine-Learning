@@ -1,6 +1,6 @@
 import math
 import numpy as np
-from abc import abstractmethod
+from abc import abstractmethod, ABC
 
 
 class Activation:
@@ -44,12 +44,12 @@ class Relu(Activation):
         return 1. * (x > 0)
 
 
-class Softmax(Activation):
+class Softmax(Activation, ABC):
 
     def calc(self, x: np.array):
         exp_x = np.exp(x - np.max(x, axis=-1, keepdims=True))
         return exp_x / np.sum(exp_x, axis=-1, keepdims=True)
 
-    def derivative(self, x: np.array):
-        s = x.reshape(-1, 1)
+    def derivative(self, x):
+        s = self.calc(x).reshape(-1, 1)
         return np.diagflat(s) - np.dot(s, s.T)

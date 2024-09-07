@@ -11,7 +11,6 @@ class Test(unittest.TestCase):
         y = Softmax().calc(arr1)
         print(f"y: {y}")
         d = Softmax().derivative(y)
-        print()
         print(d)
 
 if __name__ == "__main__":

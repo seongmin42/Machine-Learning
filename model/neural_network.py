@@ -2,13 +2,13 @@ from typing import List
 
 import numpy as np
 from common.layer import Layer
-from loss import L2Norm
+from loss import L2Norm, LossFunction
 from initializer import NormalDistribution, Initializer, ZeroInitializer
 
 
 class Model:
     def __init__(self, weight_initializer: Initializer = NormalDistribution(),
-                 bias_initializer: Initializer = ZeroInitializer(), loss_function=L2Norm()):
+                 bias_initializer: Initializer = ZeroInitializer(), loss_function: LossFunction = L2Norm()):
         self.epochs = 10
         self.learning_rate = 0.01
         self.layers: List[Layer] = []
@@ -57,8 +57,9 @@ class Model:
             cache[f'H{i + 1}'] = H
         return cache
 
+    # y: target
     def backward_propagation(self, cache, y):
-        dE_dH = self.loss_function.partial_derivative(y, cache[f'H{len(self.layers) - 1}'])
+        dE_dH = self.loss_function.derivative(y, cache[f'H{len(self.layers) - 1}'])
         grads = {}
         for i in reversed(range(1, len(self.layers))):
             dH_dU = self.layers[i].activation.derivative(cache[f'U{i}'])
@@ -69,7 +70,7 @@ class Model:
 
     def update_params(self, grads, learning_rate):
         for i in range(1, len(self.layers)):
-            self.params[f'W{i}'] += learning_rate * grads[f'dW{i}']
+            self.params[f'W{i}'] -= learning_rate * grads[f'dW{i}']
 
     def evaluate(self, target, y_pred):
         return self.loss_function.calc(target, y_pred)
